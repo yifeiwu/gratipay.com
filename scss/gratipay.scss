@@ -10,10 +10,10 @@
 
 */
 
-@import "mixins/layout";
-@import "mixins/icons";
-@import "mixins/borders-backgrounds-shadows";
 @import "mixins/animation";
+@import "mixins/border-radius";
+@import "mixins/icons";
+@import "mixins/layout";
 @import "mixins/transform";
 @import "utils";
 @import "variables";
