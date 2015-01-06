@@ -1,0 +1,22 @@
+from aspen import Response
+
+[-----------------------------]
+
+if not POST:
+    raise Response(405)
+
+try:
+    reasons, details, contact = body['reason'], body['details'], body['contact']
+except KeyError:
+    raise Response(400)
+
+response.redirect("/colindean/report/submitted")
+
+
+[-----------------------------] text/plain
+
+Reason: {{reasons}}
+
+Details: {{ details }}
+
+Contact: {{ contact }}

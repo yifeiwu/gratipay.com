@@ -95,6 +95,7 @@ def with_others(obj):
             {% include "templates/team-listing.html" %}
             {% include "templates/community-listing.html" %}
             {% include "templates/connected-accounts.html" %}
+            {% include "templates/report-account.html" %}
         </div>
     </div>
 {% endif %}

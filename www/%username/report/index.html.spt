@@ -1,0 +1,68 @@
+"""Enables a viewer to report a user
+"""
+
+from gratipay.utils import get_participant
+
+[-----------------------------------------------------------------------------]
+
+participant = team = get_participant(request, restrict=False)
+
+reasons = [
+  _("The account's profile statement or avatar contains something I don't like."),
+  _("The account isn't following Gratipay's Guidelines for User Generated Content."),
+  _("The account represents a person or organization who cannot legally use a US-based service."),
+  _("The account represents a person or organization who is doing something illegal and asking elsewhere for money to do it."),
+  _("The account is impersonating a person or organization without disclosing that they are an impersonation."),
+  _("The account represents a person or organization who is dead or defunct."),
+  _("The account is misusing the Gratipay logo somewhere outside of Gratipay."),
+  _("The account is speaking ill of Gratipay elsewhere."),
+  _("The account is doing something else I don't think it should be, and I'll explain in detail.")
+]
+
+[-----------------------------------------------------------------------------]
+
+{% extends "templates/profile.html" %}
+
+{% block page %}
+
+<h2>Report {{ participant.username }}</h2>
+
+<form action="/{{participant.username}}/report/submit" method="POST">
+<fieldset>
+  <legend><label for="reason">
+    {{ _("Why do you want to report {0}?", participant.username)}}
+  </label><legend>
+
+  {% for reason in reasons %}
+  <input type="checkbox" name="reason" value="{{ reason }}">{{ reason }}</input><br/>
+  {% endfor %}
+
+</fieldset>
+
+<fieldset>
+  <legend><label for="details">
+    {{ _("Can you explain any further?") }}
+  </label></legend>
+  <textarea name="details"
+            placeholder="{{ _("Provide as much detail as possible.")}}"></textarea>
+
+  <p><small>
+    <em>{{ _("Your detail provided here is private and may be formatted using Markdown.") }}</em>
+  </small></p>
+
+  <p>
+    <label for="contact">{{ _("What is your email address?") }}</label>
+    <input type="text" name="contact" placeholder="you@example.com"/>
+  </p>
+
+  <button type="submit">
+    {{ _("Submit report of user {0}", participant.username)}}
+  </button>
+
+  <input type="hidden" name="about" value="{{ participant.username }}"/>
+  {% if user.participant %}
+    <input type="hidden" name="by" value="{{ user.participant.username }}"/>
+  {% endif %}
+</form>
+
+{% endblock %}
