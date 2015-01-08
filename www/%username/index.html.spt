@@ -16,6 +16,7 @@ title = username = participant.username
 accounts = participant.get_accounts_elsewhere()
 
 statement, stmt_lang = participant.get_statement(request.accept_langs)
+stmt_lang_is_first_lang = stmt_lang == request.accept_langs[0]
 long_statement = len(statement or '') > LONG_STATEMENT
 if user.participant == participant:
     pref_langs = set(request.accept_langs + participant.get_statement_langs())
@@ -75,9 +76,19 @@ def with_others(obj):
         <div class="col0">
             {% if statement %}
             <h2>{{ _("Statement") }}</h2>
+            {% if not stmt_lang_is_first_lang %}
+              <div class="statement-disclaimer">
+                {% if stmt_lang in request.accept_langs %}
+                  {{ _("A statement is not available in your primary language, but is available in another language which your browser says that you can read.") }}
+                {% else %}
+                  {{ _("A statement is not available in your language. It is instead shown in the language in which is was originally written.") }}
+                {% endif %}
+              </div>
+              {% endif %}
             <div class="statement markdown-output">
                 {{ markdown.render(statement) }}
             </div>
+
             {% endif %}
             <div class="goal">
                 <h2>{{ _('Funding Goal') }}</h2>
