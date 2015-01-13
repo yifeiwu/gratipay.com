@@ -183,6 +183,25 @@ Gratipay.account.init = function() {
     });
 
 
+    // Wire up anonymous supporters.
+    // =============================
+
+    $('.anonymous-supporters input').click(function() {
+        jQuery.ajax(
+            { url: '../anonymous.json'
+            , type: 'POST'
+            , data: {toggle: 'supporters'}
+            , dataType: 'json'
+            , success: function(data) {
+                $('.anonymous-supporters input').attr('checked', data.receiving);
+            }
+            , error: function() {
+                Gratipay.notification("Failed to change your anonymity preference. Please try again.", 'error');
+            }
+        });
+    });
+
+
     // Wire up close account.
     // ======================
 

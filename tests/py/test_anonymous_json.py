@@ -20,7 +20,7 @@ class Tests(Harness):
     def test_participant_can_get_their_anonymity_settings(self):
         response = self.hit_anonymous('GET')
         actual = json.loads(response.body)
-        assert actual == {'giving': False, 'receiving': False}
+        assert actual == {'giving': False, 'receiving': False, 'supporters': True}
 
     def test_participant_can_toggle_anonymous_giving(self):
         response = self.hit_anonymous('POST', data={'toggle': 'giving'})
@@ -31,6 +31,11 @@ class Tests(Harness):
         response = self.hit_anonymous('POST', data={'toggle': 'receiving'})
         actual = json.loads(response.body)
         assert actual['receiving'] is True
+
+    def test_participant_can_toggle_anonymous_supporters(self):
+        response = self.hit_anonymous('POST', data={'toggle': 'supporters'})
+        actual = json.loads(response.body)
+        assert actual['supporters'] is False
 
     def test_team_cannot_toggle_anonymous_receiving(self):
         self.make_participant('team', number='plural')
@@ -43,6 +48,15 @@ class Tests(Harness):
         expected = 400
         assert actual == expected
 
+    def test_team_can_toggle_anonymous_supporters(self):
+        self.make_participant('team', number='plural')
+        response = self.client.POST(
+            '/team/anonymous.json',
+            auth_as='team',
+            data={'toggle': 'supporters'}
+        )
+        assert json.loads(response.body)['supporters'] == False
+
     def test_participant_can_toggle_anonymous_giving_back(self):
         response = self.hit_anonymous('POST', data={'toggle': 'giving'})
         response = self.hit_anonymous('POST', data={'toggle': 'giving'})
@@ -54,3 +68,9 @@ class Tests(Harness):
         response = self.hit_anonymous('POST', data={'toggle': 'receiving'})
         actual = json.loads(response.body)['receiving']
         assert actual is False
+
+    def test_participant_can_toggle_anonymous_supporters_back(self):
+        response = self.hit_anonymous('POST', data={'toggle': 'supporters'})
+        response = self.hit_anonymous('POST', data={'toggle': 'supporters'})
+        actual = json.loads(response.body)['supporters']
+        assert actual is True

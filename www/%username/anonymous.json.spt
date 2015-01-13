@@ -5,7 +5,7 @@ if user.ANON:
 request.allow("GET", "POST")
 if POST:
     field = body.get("toggle", "giving")
-    if field not in ["giving", "receiving"]:
+    if field not in ["giving", "receiving", "supporters"]:
         raise Response(400)
     if user.participant.IS_PLURAL and field == "receiving":
         raise Response(400)
@@ -22,8 +22,11 @@ if POST:
 else:
     rec = website.db.one("""
 
-        SELECT anonymous_giving AS giving, anonymous_receiving AS receiving
-        FROM participants WHERE username=%s
+        SELECT anonymous_giving     AS giving
+             , anonymous_receiving  AS receiving
+             , anonymous_supporters AS supporters
+          FROM participants
+         WHERE username=%s
 
     """, (user.participant.username,), back_as=dict)
     assert rec is not None

@@ -202,6 +202,15 @@ emails = participant.get_emails()
             {% endif %}
         </p>
 
+        <h2>{{ _("Supporter Identity") }}</h2>
+        <p>
+            <label class="anonymous-supporters">
+                <input type="checkbox"
+                    {% if not participant.anonymous_supporters %}checked="true"{% endif %} />
+                    {{ _("Allow my supporters to divulge themselves.") }}
+            </label>
+        </p>
+
         <div class="close">
           <h2>{{ _("Close") }}</h2>
           <div class="buttons">
