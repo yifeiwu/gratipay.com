@@ -171,28 +171,95 @@ emails = participant.get_emails()
           <a href="https://github.com/gratipay/gratipay.com#api">{{ _("API docs") }}</a>
         </div>
 
+
         <h2>{{ _("Privacy") }}</h2>
-        <p>
-            <label class="anonymous-giving">
-                <input type="checkbox"
-                    {% if participant.anonymous_giving %}checked="true"{% endif %} />
-                    {{ _("Hide total giving from others.") }}
-            </label>
-            <br />
-            {% if participant.IS_SINGULAR %}
-            <label class="anonymous-receiving">
-                <input type="checkbox"
-                    {% if participant.anonymous_receiving %}checked="true"{% endif %} />
-                    {{ _("Hide total receiving from others.") }}
-            </label>
-            {% endif %}
-            <br />
-            <label class="is-searchable">
-                <input type="checkbox"
-                    {% if not participant.is_searchable %}checked="true"{% endif %} />
-                    {{ _("Hide myself from search results.") }}
-            </label>
-        </p>
+        <p>{{ _("Allow everyone to see:") }}</p>
+
+        <ul>
+            <li>
+                <label class="is-searchable">
+                    <input type="checkbox"
+                        {% if not participant.is_searchable %}checked="true"{% endif %} />
+                    {{ _("my profile in search results") }}
+                </label>
+            </li>
+            <li>
+                <label class="anonymous-giving">
+                    <input type="checkbox"
+                        {% if participant.anonymous_giving %}checked="true"{% endif %} />
+                    {{ _("the total amount I receive (and the number of supporters I have)") }}
+                </label>
+            </li>
+            <li>
+                <label class="">
+                    <input type="checkbox" />
+                    {{ _("the total amount I give (and the number of people I support)") }}
+                </label>
+            </li>
+            <li>
+                <label class="">
+                    <input type="checkbox" />
+                    {{ _("who supports me (but not specific amounts)") }}
+                </label>
+            </li>
+            <li>
+                <label class="">
+                    <input type="checkbox" />
+                    {{ _("who I support (but not specific amounts)") }}
+                </label>
+            </li>
+            <li>
+                {% if participant.IS_SINGULAR %}
+                <label class="anonymous-receiving">
+                    <input type="checkbox"
+                        {% if participant.anonymous_receiving %}checked="true"{% endif %} />
+                    {{ _("Share my receiving summary publicly.") }}
+                </label>
+                {% endif %}
+            </li>
+        </ul>
+
+        <p>{{ _("Allow people I support to see:") }}<br>
+        ({{ _("You can override these for each payment you set up.)") }}</p>
+
+        <ul>
+            <li>
+                <label class="">
+                    <input type="checkbox" />
+                    {{ _("who I am") }}
+                </label>
+            </li>
+            <li>
+                <label class="">
+                    <input type="checkbox" />
+                    {{ _("the amount I pay them") }}
+                </label>
+            </li>
+        </ul>
+
+        <p>{{ _("Who are your supporters?") }}</p>
+        <ul>
+            <li>
+                <label class="anonymous-supporters">
+                    <input type="radio" name="anonymous-supporters" value="not-allowed"
+                        {% if not participant.anonymous_supporters %}checked="true"{% endif %} />
+                    {{ _("I don't want to know who my supporters are.") }}
+                </label>
+            </li>
+            <li>
+                <label class="anonymous-supporters">
+                    <input type="radio" name="anonymous-supporters" value="amount-allowed" />
+                    {{ _("Allow my supporters to tell me who they are and how much they pay me.") }}
+                </label>
+            </li>
+            <li>
+                <label class="anonymous-supporters">
+                    <input type="radio" name="anonymous-supporters" value="amount-required" />
+                    {{ _("Require my supporters to tell me who they are and how much they pay me.") }}
+                </label>
+            </li>
+        </ul>
+
         <p id="dnt">
             <a href="/about/privacy/#dnt">{{ _("Do Not Track") }}</a>:
             {% if request.headers.get('DNT') == '1' %}
@@ -200,15 +267,6 @@ emails = participant.get_emails()
             {% else %}
                 {{ _("Off").upper() }}
             {% endif %}
-        </p>
-
-        <h2>{{ _("Supporter Identity") }}</h2>
-        <p>
-            <label class="anonymous-supporters">
-                <input type="checkbox"
-                    {% if not participant.anonymous_supporters %}checked="true"{% endif %} />
-                    {{ _("Allow my supporters to divulge themselves.") }}
-            </label>
         </p>
 
         <div class="close">
