@@ -242,13 +242,13 @@ emails = participant.get_emails()
             <li>
                 <label class="anonymous-supporters">
                     <input type="radio" name="anonymous-supporters" value="amount-allowed" />
-                    {{ _("Allow my supporters to tell me.") }}
+                    {{ _("Allow each supporter to tell me.") }}
                 </label>
             </li>
             <li>
                 <label class="anonymous-supporters">
                     <input type="radio" name="anonymous-supporters" value="amount-required" />
-                    {{ _("Require my supporters to tell me.") }}
+                    {{ _("Require each supporter to tell me.") }}
                 </label>
             </li>
         </ul>
