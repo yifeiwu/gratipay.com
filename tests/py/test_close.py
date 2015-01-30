@@ -291,8 +291,12 @@ class TestClosing(Harness):
     def test_cpi_clears_personal_information(self, mailer):
         alice = self.make_participant( 'alice'
                                      , goal=100
-                                     , anonymous_giving=True
-                                     , anonymous_receiving=True
+                                     , public_giving=False
+                                     , public_receiving=False
+                                     , public_supporting=True
+                                     , public_supporters=True
+                                     , tell_supporting=True
+                                     , know_supporters=True
                                      , avatar_url='img-url'
                                      , email_address='alice@example.com'
                                      , claimed_time='now'
@@ -312,8 +316,12 @@ class TestClosing(Harness):
 
         assert alice.get_statement(['en']) == (None, None)
         assert alice.goal == new_alice.goal == None
-        assert alice.anonymous_giving == new_alice.anonymous_giving == False
-        assert alice.anonymous_receiving == new_alice.anonymous_receiving == False
+        assert alice.public_giving == new_alice.public_giving == True
+        assert alice.public_receiving == new_alice.public_receiving == True
+        assert alice.public_supporting == new_alice.public_supporting == False
+        assert alice.public_supporters == new_alice.public_supporters == False
+        assert alice.tell_supporting == new_alice.tell_supporting == False
+        assert alice.know_supporters == new_alice.know_supporters == False
         assert alice.number == new_alice.number == 'singular'
         assert alice.avatar_url == new_alice.avatar_url == None
         assert alice.email_address == new_alice.email_address == None

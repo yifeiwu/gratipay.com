@@ -166,8 +166,8 @@ class TestChartsJson(Harness):
     def test_anonymous_receiver(self):
         self.run_payday()
         self.run_payday()
-        self.client.POST('/carl/anonymous.json',
-                         {'toggle': 'receiving'},
+        self.client.POST('/carl/account/privacy',
+                         {'field': 'public_receiving', 'value': 'false'},
                          auth_as='carl')
 
         r = self.client.GxT('/carl/charts.json')

@@ -482,8 +482,12 @@ class Participant(Model, MixinTeam):
 
             UPDATE participants
                SET goal=NULL
-                 , anonymous_giving=False
-                 , anonymous_receiving=False
+                 , public_giving=True
+                 , public_receiving=True
+                 , public_supporting=False
+                 , public_supporters=False
+                 , tell_supporting=False
+                 , know_supporters=False
                  , number='singular'
                  , avatar_url=NULL
                  , email_address=NULL
@@ -1137,9 +1141,9 @@ class Participant(Model, MixinTeam):
         out = self.username
         receiving = self.receiving
         giving = self.giving
-        if (giving > receiving) and not self.anonymous_giving:
+        if (giving > receiving) and self.public_giving:
             out += " gives $%.2f/wk" % giving
-        elif receiving > 0 and not self.anonymous_receiving:
+        elif receiving > 0 and self.public_receiving:
             out += " receives $%.2f/wk" % receiving
         else:
             out += " is"
@@ -1665,7 +1669,7 @@ class Participant(Model, MixinTeam):
         # Values:
         #   null - user is receiving anonymously
         #   3.00 - user receives this amount in tips
-        if not self.anonymous_receiving:
+        if self.public_receiving:
             receiving = str(self.receiving)
         else:
             receiving = None
@@ -1675,7 +1679,7 @@ class Participant(Model, MixinTeam):
         # Values:
         #   null - user is giving anonymously
         #   3.00 - user gives this amount in tips
-        if not self.anonymous_giving:
+        if self.public_giving:
             giving = str(self.giving)
         else:
             giving = None
