@@ -126,78 +126,40 @@ Gratipay.account.init = function() {
     });
 
 
-    // Wire up anonymous giving.
+    // Wire up privacy settings.
     // =========================
 
-    $('.anonymous-giving input').click(function() {
-        jQuery.ajax(
-            { url: '../anonymous.json'
-            , type: 'POST'
-            , data: {toggle: 'giving'}
-            , dataType: 'json'
-            , success: function(data) {
-                $('.anonymous-giving input').attr('checked', data.giving);
-            }
-            , error: function() {
-                Gratipay.notification("Failed to change your anonymity preference. Please try again.", 'error');
-            }
-        });
-    });
+    $('.privacy input').each(function() {
+        var $input = $(this);
+        var field = $input.attr('name');
+        var is_checkbox = $input.attr('type') === 'checkbox';
 
+        $(this).click(function() {
 
-    // Wire up anonymous receiving.
-    // ============================
+            if (is_checkbox)
+                var value = $input.prop('checked').toString();
+            else
+                var value = $input.attr('value');
+            console.log(field, value);
 
-    $('.anonymous-receiving input').click(function() {
-        jQuery.ajax(
-            { url: '../anonymous.json'
-            , type: 'POST'
-            , data: {toggle: 'receiving'}
-            , dataType: 'json'
-            , success: function(data) {
-                $('.anonymous-receiving input').attr('checked', data.receiving);
-            }
-            , error: function() {
-                Gratipay.notification("Failed to change your anonymity preference. Please try again.", 'error');
-            }
-        });
-    });
-
-
-    // Wire up search opt out.
-    // =======================
-
-    $('.is-searchable input').click(function() {
-        jQuery.ajax(
-            { url: '../privacy.json'
-            , type: 'POST'
-            , data: {toggle: 'is_searchable'}
-            , dataType: 'json'
-            , success: function(data) {
-                $('.is-searchable input').attr('checked', !data.is_searchable);
-            }
-            , error: function() {
-                Gratipay.notification("Failed to change your search opt out settings. Please try again.", 'error');
-            }
-        });
-    });
-
-
-    // Wire up anonymous supporters.
-    // =============================
-
-    $('.anonymous-supporters input').click(function() {
-        jQuery.ajax(
-            { url: '../anonymous.json'
-            , type: 'POST'
-            , data: {toggle: 'supporters'}
-            , dataType: 'json'
-            , success: function(data) {
-                $('.anonymous-supporters input').attr('checked', data.receiving);
-            }
-            , error: function() {
-                Gratipay.notification("Failed to change your anonymity preference. Please try again.", 'error');
-            }
+            jQuery.ajax(
+                { url: './privacy'
+                , type: 'POST'
+                , data: {field: field, value: value}
+                , dataType: 'text'
+                , success: function(data) {
+                    if (is_checkbox)
+                        $input.attr('checked', data[field]);
+                    else    // assumed to be a radio
+                        $('[value=' + data[field]).prop('checked', true);
+                    Gratipay.notification("Privacy preferences updated.", "success");
+                }
+                , error: function() {
+                    Gratipay.notification( "Sorry, we failed to update your privacy preferences."
+                                         , "error"
+                                          );
+                }
+            });
         });
     });
 

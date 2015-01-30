@@ -1,4 +1,16 @@
 BEGIN;
-    ALTER TABLE participants    ADD COLUMN anonymous_supporters boolean NOT NULL DEFAULT TRUE;
-    ALTER TABLE transfers       ADD COLUMN is_anonymous         boolean NOT NULL DEFAULT TRUE;
+    ALTER TABLE participants    ADD COLUMN public_giving        boolean NOT NULL DEFAULT TRUE;
+    ALTER TABLE participants    ADD COLUMN public_receiving     boolean NOT NULL DEFAULT TRUE;
+    ALTER TABLE participants    ADD COLUMN public_supporting    boolean NOT NULL DEFAULT FALSE;
+    ALTER TABLE participants    ADD COLUMN public_supporters    boolean NOT NULL DEFAULT FALSE;
+
+    ALTER TABLE participants    ADD COLUMN tell_supporting      boolean NOT NULL DEFAULT FALSE;
+
+    ALTER TABLE participants    ADD COLUMN know_supporters      boolean DEFAULT FALSE;
+
+    UPDATE participants SET public_receiving=not anonymous_receiving
+                          , public_giving=not anonymous_giving;
+
+    ALTER TABLE participants    DROP COLUMN anonymous_receiving;
+    ALTER TABLE participants    DROP COLUMN anonymous_giving;
 END;
