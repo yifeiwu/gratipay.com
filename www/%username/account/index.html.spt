@@ -230,25 +230,25 @@ emails = participant.get_emails()
             </li>
         </ul>
 
-        {{ _("Who are your supporters?") }}
+        {{ _("Who pays you what, exactly?") }}
         <ul class="options">
             <li>
                 <label class="anonymous-supporters">
                     <input type="radio" name="anonymous-supporters" value="not-allowed"
                         {% if not participant.anonymous_supporters %}checked="true"{% endif %} />
-                    {{ _("I don't want to know who my supporters are.") }}
+                    {{ _("I don't want to know.") }}
                 </label>
             </li>
             <li>
                 <label class="anonymous-supporters">
                     <input type="radio" name="anonymous-supporters" value="amount-allowed" />
-                    {{ _("Allow my supporters to tell me who they are and how much they pay me.") }}
+                    {{ _("Allow my supporters to tell me.") }}
                 </label>
             </li>
             <li>
                 <label class="anonymous-supporters">
                     <input type="radio" name="anonymous-supporters" value="amount-required" />
-                    {{ _("Require my supporters to tell me who they are and how much they pay me.") }}
+                    {{ _("Require my supporters to tell me.") }}
                 </label>
             </li>
         </ul>
