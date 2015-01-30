@@ -173,9 +173,9 @@ emails = participant.get_emails()
 
 
         <h2>{{ _("Privacy") }}</h2>
-        <p>{{ _("Allow everyone to see:") }}</p>
+        {{ _("Allow everyone to see:") }}
 
-        <ul>
+        <ul class="options">
             <li>
                 <label class="is-searchable">
                     <input type="checkbox"
@@ -184,16 +184,18 @@ emails = participant.get_emails()
                 </label>
             </li>
             <li>
-                <label class="anonymous-giving">
+                {% if participant.IS_SINGULAR %}
+                <label class="anonymous-receiving">
                     <input type="checkbox"
-                        {% if participant.anonymous_giving %}checked="true"{% endif %} />
-                    {{ _("the total amount I receive (and the number of supporters I have)") }}
+                        {% if participant.anonymous_receiving %}checked="true"{% endif %} />
+                    {{ _("the total amount I receive (and the number of supporters I have.") }}
                 </label>
+                {% endif %}
             </li>
             <li>
                 <label class="">
                     <input type="checkbox" />
-                    {{ _("the total amount I give (and the number of people I support)") }}
+                    {{ _("the total amount I give (along with the number of people I support)") }}
                 </label>
             </li>
             <li>
@@ -208,21 +210,12 @@ emails = participant.get_emails()
                     {{ _("who I support (but not specific amounts)") }}
                 </label>
             </li>
-            <li>
-                {% if participant.IS_SINGULAR %}
-                <label class="anonymous-receiving">
-                    <input type="checkbox"
-                        {% if participant.anonymous_receiving %}checked="true"{% endif %} />
-                    {{ _("Share my receiving summary publicly.") }}
-                </label>
-                {% endif %}
-            </li>
         </ul>
 
-        <p>{{ _("Allow people I support to see:") }}<br>
-        ({{ _("You can override these for each payment you set up.)") }}</p>
+        {{ _("Allow people I support to see:") }}
+        <div class="note">({{ _("You can override these for each payment you set up.)") }}</div>
 
-        <ul>
+        <ul class="options">
             <li>
                 <label class="">
                     <input type="checkbox" />
@@ -237,8 +230,8 @@ emails = participant.get_emails()
             </li>
         </ul>
 
-        <p>{{ _("Who are your supporters?") }}</p>
-        <ul>
+        {{ _("Who are your supporters?") }}
+        <ul class="options">
             <li>
                 <label class="anonymous-supporters">
                     <input type="radio" name="anonymous-supporters" value="not-allowed"
