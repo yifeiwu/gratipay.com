@@ -218,19 +218,13 @@ emails = participant.get_emails()
         </ul>
 
         {{ _("Allow people I support to see:") }}
-        <div class="note">{{ _("You can override these for each payment you set up.") }}</div>
+        <div class="note">{{ _("You can override this default for each payment you set up.") }}</div>
 
         <ul class="options">
             <li>
                 <label class="">
                     <input type="checkbox" />
-                    {{ _("who I am") }}
-                </label>
-            </li>
-            <li>
-                <label class="">
-                    <input type="checkbox" />
-                    {{ _("the amount I pay them") }}
+                    {{ _("who I am and the amount I pay them") }}
                 </label>
             </li>
         </ul>
