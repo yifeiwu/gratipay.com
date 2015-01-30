@@ -202,6 +202,13 @@ emails = participant.get_emails()
                     </label>
                 </li>
                 {% endif %}
+            </ul>
+
+            {{ _("Allow everyone to see:") }}
+            <div class="note">
+                {{ _("You can override these defaults for each payment you set up.") }}
+            </div>
+            <ul class="options">
                 <li>
                     <label>
                         <input type="checkbox" name="public_supporting"
