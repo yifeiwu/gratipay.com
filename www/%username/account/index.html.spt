@@ -181,6 +181,7 @@ emails = participant.get_emails()
                     <input type="checkbox"
                         {% if not participant.is_searchable %}checked="true"{% endif %} />
                     {{ _("my profile in search results") }}
+                    <div class="note">both on Gratipay and in search engines such as Google</div>
                 </label>
             </li>
             <li>
@@ -188,32 +189,36 @@ emails = participant.get_emails()
                 <label class="anonymous-receiving">
                     <input type="checkbox"
                         {% if participant.anonymous_receiving %}checked="true"{% endif %} />
-                    {{ _("the total amount I receive (and the number of supporters I have.") }}
+                    {{ _("the total amount I receive") }}
+                    <div class="note">{{ _("and the number of supporters I have") }}</div>
                 </label>
                 {% endif %}
             </li>
             <li>
                 <label class="">
                     <input type="checkbox" />
-                    {{ _("the total amount I give (along with the number of people I support)") }}
+                    {{ _("the total amount I give") }}
+                    <div class="note">{{ _("and the number of people I support") }}</div>
                 </label>
             </li>
             <li>
                 <label class="">
                     <input type="checkbox" />
-                    {{ _("who supports me (but not specific amounts)") }}
+                    {{ _("who supports me") }}
+                    <div class="note">{{ ("but not specific amounts") }}</div>
                 </label>
             </li>
             <li>
                 <label class="">
                     <input type="checkbox" />
-                    {{ _("who I support (but not specific amounts)") }}
+                    {{ _("who I support") }}
+                    <div class="note">{{ ("but not specific amounts") }}</div>
                 </label>
             </li>
         </ul>
 
         {{ _("Allow people I support to see:") }}
-        <div class="note">({{ _("You can override these for each payment you set up.)") }}</div>
+        <div class="note">{{ _("You can override these for each payment you set up.") }}</div>
 
         <ul class="options">
             <li>

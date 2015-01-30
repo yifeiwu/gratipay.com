@@ -9,6 +9,13 @@
             top: 6px;
             left: 0px;
         }
+
+        .note {
+            padding: 0 0 5px;
+        }
+        &:last-child .note {
+            padding: 0;
+        }
     }
     margin: 10px 0 40px;
     padding: 0;
