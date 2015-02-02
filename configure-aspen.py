@@ -74,9 +74,8 @@ def formdata(raw, headers):
             result.add(k, v)
     return result
 
-website.body_parsers = { "application/x-www-form-urlencoded": formdata
-                       , "multipart/form-data": formdata
-                        }
+website.body_parsers["application/x-www-form-urlencoded"] = formdata
+website.body_parsers["multipart/form-data"] = formdata
 
 
 # Wireup Algorithm
