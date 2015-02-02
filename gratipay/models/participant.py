@@ -892,7 +892,8 @@ class Participant(Model, MixinTeam):
             self.set_attributes(is_free_rider=is_free_rider)
 
 
-    def set_tip_to(self, tippee, amount, update_self=True, update_tippee=True, cursor=None):
+    def set_tip_to(self, tippee, amount, show_tippee, show_everyone, update_self=True,
+            update_tippee=True, cursor=None):
         """Given a Participant or username, and amount as str, returns a dict.
 
         We INSERT instead of UPDATE, so that we have history to explore. The
@@ -929,19 +930,24 @@ class Participant(Model, MixinTeam):
         NEW_TIP = """\
 
             INSERT INTO tips
-                        (ctime, tipper, tippee, amount)
+                        (ctime, tipper, tippee, amount, show_tippee, show_everyone)
                  VALUES ( COALESCE (( SELECT ctime
                                         FROM tips
                                        WHERE (tipper=%(tipper)s AND tippee=%(tippee)s)
                                        LIMIT 1
                                       ), CURRENT_TIMESTAMP)
-                        , %(tipper)s, %(tippee)s, %(amount)s
+                        , %(tipper)s, %(tippee)s, %(amount)s, %(show_tippee)s, %(show_everyone)s
                          )
               RETURNING *
                       , ( SELECT count(*) = 0 FROM tips WHERE tipper=%(tipper)s ) AS first_time_tipper
 
         """
-        args = dict(tipper=self.username, tippee=tippee.username, amount=amount)
+        args = dict( tipper=self.username
+                   , tippee=tippee.username
+                   , amount=amount
+                   , show_tippee=show_tippee
+                   , show_everyone=show_everyone
+                    )
         t = (cursor or self.db).one(NEW_TIP, args)
 
         if update_self:

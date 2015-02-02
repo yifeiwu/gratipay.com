@@ -13,4 +13,7 @@ BEGIN;
 
     ALTER TABLE participants    DROP COLUMN anonymous_receiving;
     ALTER TABLE participants    DROP COLUMN anonymous_giving;
+
+    ALTER TABLE tips            ADD COLUMN show_tippee          boolean NOT NULL DEFAULT FALSE;
+    ALTER TABLE tips            ADD COLUMN show_everyone        boolean NOT NULL DEFAULT FALSE;
 END;

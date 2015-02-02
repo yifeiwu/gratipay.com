@@ -25,9 +25,15 @@ tippee = get_participant(request, restrict=False, resolve_unclaimed=False)
 # Get and maybe set amount.
 # =========================
 
-if POST and 'amount' in body and tippee != tipper:
+if POST:
+    if tippee == tipper:
+        raise Response(400, "no self-tipping")
+
     try:
-        out = tipper.set_tip_to(tippee, parse_decimal(body['amount']))
+        amount = parse_decimal(body['amount'])
+        show_tippee = body['show_tippee'] == 'true'
+        show_everyone = body['show_everyone'] == 'true'
+        out = tipper.set_tip_to(tippee, amount, show_tippee, show_everyone)
     except (InvalidOperation, ValueError, BadAmount, NumberFormatError):
         raise Response(400, "bad amount")
     except UserDoesntAcceptTips:

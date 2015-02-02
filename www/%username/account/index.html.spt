@@ -206,7 +206,7 @@ emails = participant.get_emails()
 
             {{ _("Allow everyone to see:") }}
             <div class="note">
-                {{ _("You can override these defaults for each payment you set up.") }}
+                {{ _("You can override these defaults for each payment.") }}
             </div>
             <ul class="options">
                 <li>
