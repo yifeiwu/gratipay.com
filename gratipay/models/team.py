@@ -101,30 +101,34 @@ class Team(Model):
             raise MemberLimitReached
         if not member.is_claimed:
             raise StubParticipantAdded
-        self.__set_take_for(member, Decimal('0.01'), self.owner)
+        self.db.run("""
+            INSERT INTO team_memberships
+                        (member, team, ctime)
+                 VALUES (%s, %s, CURRENT_TIMESTAMP)
+        """, (member.username, self.slug))
 
     def remove_member(self, member):
         """Remove a member from this team.
         """
-        self.__set_take_for(member, Decimal('0.00'), self.owner)
+        self.db.run("""
+            UPDATE team_memberships
+             WHERE member = %s
+               AND team = %s
+               SET is_active = false
+        """, (member.username, self.slug))
 
     def remove_all_members(self, cursor=None):
         (cursor or self.db).run("""
-            INSERT INTO payroll
-                        (ctime, member, team, amount, recorder)
-                        (
-                            SELECT ctime, member, %(team)s, 0.00, %(recorder)s
-                              FROM current_payroll
-                             WHERE team=%(team)s
-                               AND amount > 0
-                        );
-        """, dict(team=self.slug, recorder=self.owner))
+            UPDATE team_memberships
+             WHERE team = %s
+               SET is_active = false
+        """, (self.slug,))
 
     @property
     def nmembers(self):
         return self.db.one("""
             SELECT COUNT(*)
-              FROM current_payroll
+              FROM team_memberships
              WHERE team=%s
         """, (self.slug, ))
 
