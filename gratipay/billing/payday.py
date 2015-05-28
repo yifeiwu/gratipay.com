@@ -423,9 +423,9 @@ class Payday(object):
                         AND t.is_closed IS NOT TRUE
                    ) + (
                      SELECT count(*)
-                       FROM current_payroll pr
-                       JOIN teams t ON t.slug = pr.team
-                      WHERE pr.member = p.username
+                       FROM team_memberships m
+                       JOIN teams t ON t.slug = m.team
+                      WHERE m.member = p.username
                         AND t.is_approved IS TRUE
                    ) > 0
         """)
