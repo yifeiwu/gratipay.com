@@ -6,6 +6,7 @@ import os
 import balanced
 import braintree
 import mock
+import pytest
 
 from gratipay.billing.exchanges import create_card_hold
 from gratipay.billing.payday import NoPayday, Payday
