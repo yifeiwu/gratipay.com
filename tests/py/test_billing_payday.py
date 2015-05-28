@@ -341,13 +341,7 @@ class TestPayin(BillingHarness):
         team = self.make_team(owner=self.homer, is_approved=True)
         self.janet.set_subscription_to(team, '20.00')
         team.add_member(self.janet)
-        # Manually hike janet's take to $20
-        self.db.run("""
-            UPDATE payroll
-               SET amount='20'
-             WHERE team=%s
-               AND member=%s
-        """, (team.slug, self.janet.username))
+        team._Team__set_take_for(self.janet, D('20.00'), self.janet)
         Payday.start().payin()
 
         assert log.call_args_list[-6][0] == ("Captured 0 card holds.",)
@@ -422,10 +416,11 @@ class TestPayin(BillingHarness):
         team_funder = self.make_participant('team_funder', claimed_time='now', balance=50)
         team = self.make_team(is_approved=True, owner=team_owner)
         team_funder.set_subscription_to(team, D('20.00'))
-
+        bob = self.make_participant('bob', claimed_time='now')
         alice = self.make_participant('alice', claimed_time='now')
         team.add_member(alice)
-        team.add_member(self.make_participant('bob', claimed_time='now'))
+        team.add_member(bob)
+        team.set_take_for(bob, D('0.01'), bob)
         team.set_take_for(alice, D('1.00'), alice)
 
         payday = Payday.start()
