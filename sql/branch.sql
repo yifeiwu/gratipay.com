@@ -8,5 +8,6 @@ BEGIN;
     , is_active        boolean                      DEFAULT NULL
     , ctime            timestamp with time zone     NOT NULL
     , mtime            timestamp with time zone     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    , UNIQUE (team, member)
      );
 END;
