@@ -475,16 +475,10 @@ class TestPayin(BillingHarness):
         payment = self.db.one("SELECT * FROM payments WHERE direction='to-participant'")
         assert payment.amount == D('0.51')
 
-    @mock.patch.object(Payday, 'fetch_card_holds')
-    def test_transfer_takes_doesnt_make_negative_transfers(self, fch):
-        hold = balanced.CardHold(amount=1500, meta={'participant_id': self.janet.id},
-                                 card_href=self.card_href)
-        hold.capture = lambda *a, **kw: None
-        hold.save = lambda *a, **kw: None
-        fch.return_value = {self.janet.id: hold}
-
+    def test_transfer_takes_doesnt_make_negative_transfers(self):
+        self.make_exchange('braintree-cc', D('10.00'), D('0.00'), self.obama)
         team = self.make_team('Gratiteam', self.homer, is_approved=True)
-        self.janet.set_subscription_to(team, D('0.5')) # Total team funds is $0.5
+        self.obama.set_subscription_to(team, D('0.5')) # Total team funds is $0.5
         bob = self.make_participant('bob', claimed_time='now')
         team.add_member(bob) # Bob should receive $0, coz the $0.5 is exhausted (kids first)
         team.add_member(self.david)
@@ -495,7 +489,7 @@ class TestPayin(BillingHarness):
         assert Participant.from_id(bob.id).balance == 0
         assert Participant.from_id(self.homer.id).balance == 0
         assert Participant.from_id(self.david.id).balance == D('0.50')
-        assert Participant.from_id(self.janet.id).balance == D('8.91') # Upcharged
+        assert Participant.from_id(self.obama.id).balance == D('9.50') # $10 - $0.5
 
     def test_take_over_during_payin(self):
         alice = self.make_participant('alice', claimed_time='now', balance=50)
