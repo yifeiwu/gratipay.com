@@ -416,12 +416,17 @@ class TestPayin(BillingHarness):
         team_funder = self.make_participant('team_funder', claimed_time='now', balance=50)
         team = self.make_team(is_approved=True, owner=team_owner)
         team_funder.set_subscription_to(team, D('20.00'))
-        bob = self.make_participant('bob', claimed_time='now')
         alice = self.make_participant('alice', claimed_time='now')
+        bob = self.make_participant('bob', claimed_time='now')
+        carl = self.make_participant('carl', claimed_time='now')
         team.add_member(alice)
         team.add_member(bob)
-        team.set_take_for(bob, D('0.01'), bob)
+        team.add_member(carl) # Invitation not accepted
+        alice.accept_invitation_to(team)
+        bob.accept_invitation_to(team)
         team.set_take_for(alice, D('1.00'), alice)
+        team.set_take_for(bob, D('0.01'), bob)
+        team.set_take_for(carl, D('1.00'), carl)
 
         payday = Payday.start()
 
@@ -447,6 +452,8 @@ class TestPayin(BillingHarness):
                 assert p.balance == D('1.00')
             elif p.username == 'bob':
                 assert p.balance == D('0.01')
+            elif p.username == 'carl':
+                assert p.balance == D('0.00')
             elif p.username == 'team_funder':
                 assert p.balance == D('30.00')
             else:

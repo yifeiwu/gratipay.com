@@ -945,6 +945,18 @@ class Participant(Model, MixinTeam):
 
         """, (self.username,))
 
+    def accept_invitation_to(self, team):
+        updated = self.db.one("""
+
+            UPDATE team_memberships
+               SET is_active='true'
+             WHERE member=%s
+               AND team=%s
+         RETURNING *
+
+        """, (self.username, team.slug))
+        assert updated
+
 
     # Random Junk
     # ===========
