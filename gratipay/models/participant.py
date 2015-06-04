@@ -946,17 +946,23 @@ class Participant(Model, MixinTeam):
         """, (self.username,))
 
     def accept_invitation_to(self, team):
-        updated = self.db.one("""
+        updated = self._update_membership_status_for(team, True)
+        assert updated
+
+    def decline_invitation_to(self, team):
+        updated = self._update_membership_status_for(team, False)
+        assert updated
+
+    def _update_membership_status_for(self, team, status):
+        return self.db.one("""
 
             UPDATE team_memberships
-               SET is_active='true'
+               SET is_active=%s
              WHERE member=%s
                AND team=%s
          RETURNING *
 
-        """, (self.username, team.slug))
-        assert updated
-
+        """, (status, self.username, team.slug))
 
     # Random Junk
     # ===========
