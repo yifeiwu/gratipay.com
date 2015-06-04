@@ -341,6 +341,7 @@ class TestPayin(BillingHarness):
         team = self.make_team(owner=self.homer, is_approved=True)
         self.obama.set_subscription_to(team, '20.00')
         team.add_member(self.obama)
+        self.obama.accept_invitation_to(team)
         team._Team__set_take_for(self.obama, D('20.00'), self.obama)
         Payday.start().payin()
 
@@ -488,7 +489,9 @@ class TestPayin(BillingHarness):
         self.obama.set_subscription_to(team, D('0.5')) # Total team funds is $0.5
         bob = self.make_participant('bob', claimed_time='now')
         team.add_member(bob) # Bob should receive $0, coz the $0.5 is exhausted (kids first)
+        bob.accept_invitation_to(team)
         team.add_member(self.david)
+        self.david.accept_invitation_to(team)
         team.set_take_for(self.david, D('1.00'), self.david) # David should only receive $0.5
 
         Payday.start().payin()
