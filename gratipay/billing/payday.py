@@ -275,14 +275,16 @@ class Payday(object):
         cursor.run("""
 
         INSERT INTO payday_takes
-             SELECT team, member, amount
+             SELECT pr.team, pr.member, amount
                FROM ( SELECT DISTINCT ON (team, member)
                              team, member, amount, ctime
                         FROM payroll
                        WHERE mtime < %(ts_start)s
                     ORDER BY team, member, mtime DESC
                     ) pr
+               JOIN team_memberships tm ON pr.member = tm.member AND pr.team = tm.team
               WHERE pr.amount > 0
+                AND tm.is_active IS TRUE
                 AND pr.team IN (SELECT slug FROM payday_teams)
                 AND pr.member IN (SELECT username FROM payday_participants)
                 AND ( SELECT id
