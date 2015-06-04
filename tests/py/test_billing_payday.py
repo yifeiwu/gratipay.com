@@ -98,7 +98,7 @@ class TestPayday(BillingHarness):
     @mock.patch('gratipay.billing.payday.create_card_hold')
     def test_ncc_failing(self, cch, fch):
         team = self.make_team('gratiteam', owner=self.homer, is_approved=True)
-        self.janet.set_subscription_to(team, 24)
+        self.obama.set_subscription_to(team, 24)
         fch.return_value = {}
         cch.return_value = (None, 'oops')
         payday = Payday.start()
@@ -339,14 +339,14 @@ class TestPayin(BillingHarness):
     @mock.patch('gratipay.billing.payday.log')
     def test_payin_cancels_uncaptured_holds(self, log):
         team = self.make_team(owner=self.homer, is_approved=True)
-        self.janet.set_subscription_to(team, '20.00')
-        team.add_member(self.janet)
-        team._Team__set_take_for(self.janet, D('20.00'), self.janet)
+        self.obama.set_subscription_to(team, '20.00')
+        team.add_member(self.obama)
+        team._Team__set_take_for(self.obama, D('20.00'), self.obama)
         Payday.start().payin()
 
         assert log.call_args_list[-6][0] == ("Captured 0 card holds.",)
         assert log.call_args_list[-4][0] == ("Canceled 1 card holds.",)
-        assert Participant.from_id(self.janet.id).balance == 0
+        assert Participant.from_id(self.obama.id).balance == 0
         assert Participant.from_id(self.homer.id).balance == 0
 
     def test_payin_cant_make_balances_more_negative(self):
