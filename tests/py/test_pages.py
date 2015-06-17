@@ -208,3 +208,8 @@ class TestPages(Harness):
         self.make_team(is_approved=True)
         assert self.client.GET("/TheATeam/").code == 200
         assert self.client.GxT("/~TheATeam/").code == 404
+
+    def test_balanced_removed_from_credit_card_page(self):
+        self.make_participant('alice', claimed_time='now')
+        body = self.client.GET("/~alice/routes/credit-card.html", auth_as="alice").body
+        assert  "Balanced Payments" not in body
