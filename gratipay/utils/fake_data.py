@@ -167,19 +167,15 @@ def fake_elsewhere(db, participant, platform):
                , extra_info=None
                 )
 
-def fake_payment(db, participant, team):
+def fake_payment(db, participant, team, amount, direction):
     """Create fake payment
     """
-    if participant.username == team.owner:
-        direction = 'to-participant'
-    else:
-        direction = 'to-team'
     return _fake_thing( db
                       , "payments"
                       , timestamp=faker.date_time_this_year()
-                      , participant=participant.username
-                      , team=team.slug
-                      , amount=fake_tip_amount()	
+                      , participant=participant
+                      , team=team
+                      , amount=amount	
                       , direction=direction
                        )
 
@@ -307,8 +303,8 @@ def clean_db(db):
     """)
 
 
-def populate_db(db, num_participants=100, num_tips=200, num_teams=5, num_transfers=5000, num_subscriptions=200, \
-        num_payments=5000, num_communities=20):
+def populate_db(db, num_participants=100, num_tips=200, num_teams=5, num_transfers=5000, 
+        num_communities=20):
     """Populate DB with fake data.
     """
     print("Making Participants")
@@ -324,20 +320,12 @@ def populate_db(db, num_participants=100, num_tips=200, num_teams=5, num_transfe
 
     print("Making Subscriptions")
     subscriptions = []
-    subscriptioncount = 0
-    while subscriptioncount <= num_subscriptions:
-        for participant in participants:
-            for team in teams:
-                #eliminate self-subscription
-                if participant.username != team.owner:
-                    subscriptioncount += 1
-                    if subscriptioncount > num_subscriptions:
-                        break
-                    subscriptions.append(fake_subscription(db, participant, team))
-            if subscriptioncount > num_tips:
-                break
+    for participant in participants:
+        for team in teams:
+            #eliminate self-subscription
+            if participant.username != team.owner:
+                subscriptions.append(fake_subscription(db, participant, team))
      
-
     print("Making Elsewheres")
     for p in participants:
         #All participants get between 1 and 3 elsewheres
@@ -363,17 +351,24 @@ def populate_db(db, num_participants=100, num_tips=200, num_teams=5, num_transfe
     # Payments
     payments = []
     paymentcount = 0
-    while paymentcount <= num_payments:
-        for participant in participants:
-            for team in teams:
-                paymentcount += 1
-                if paymentcount > num_payments:
-                    break
-                sys.stdout.write("\rMaking Payments (%i/%i)" % (paymentcount, num_payments))
-                sys.stdout.flush()
-                payments.append(fake_payment(db, participant, team))
-            if paymentcount > num_payments:
-                break
+    teamamounts = {}
+    for team in teams:
+        teamamounts[team.slug] = 0
+    for subscription in subscriptions:
+        participant = subscription['subscriber']
+        team = Team.from_slug(subscription['team'])
+        amount = subscription['amount']
+        if participant != team.owner: 
+            paymentcount += 1
+            sys.stdout.write("\rMaking Payments (%i)" % (paymentcount))
+            sys.stdout.flush()
+            payments.append(fake_payment(db, participant, team.slug, amount, 'to-team'))
+            teamamounts[team.slug] = teamamounts[team.slug] + amount
+    for team in teams:
+        paymentcount += 1
+        sys.stdout.write("\rMaking Payments (%i)" % (paymentcount))
+        sys.stdout.flush()
+        payments.append(fake_payment(db, team.owner, team.slug, teamamounts[team.slug], 'to-participant'))
     print("")
 
     # Transfers
