@@ -92,9 +92,10 @@ def fake_team(db, teamowner):
                    , slug_lower=teamslug.lower()
                    , name=teamname
                    , homepage='www.example.org/' + fake_text_id(3)
-                   , product_or_service=random.sample(productorservice,1)[0]
-                   , getting_involved='build'
-                   , getting_paid='paypal'
+                   , product_or_service=fake_sentence()
+                   , getting_involved=fake_sentence()
+                   , getting_paid=fake_sentence()
+                   , revenue_model=fake_sentence()
                    , owner=teamowner.username
                    , is_approved=random.sample(isapproved,1)[0]
                    , receiving=0.1
