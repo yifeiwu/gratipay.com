@@ -228,7 +228,6 @@ def prep_db(db):
                    AND NEW.direction = 'to-team';
 
                 RETURN NULL;
-
             END;
         $$ language plpgsql;
 
@@ -295,6 +294,7 @@ def prep_db(db):
 def clean_db(db):
     db.run("""
         DROP FUNCTION process_transfer() CASCADE;
+        DROP FUNCTION process_payment() CASCADE;
         DROP FUNCTION process_exchange() CASCADE;
         DROP FUNCTION process_payday() CASCADE;
     """)
@@ -317,11 +317,11 @@ def populate_db(db, num_participants=100, num_tips=200, num_teams=25, num_transf
 
     print("Making Subscriptions")
     subscriptions = []
-    for participant in participants:
-        for team in teams:
-            #eliminate self-subscription
-            if participant.username != team.owner:
-                subscriptions.append(fake_subscription(db, participant, team))
+    for team in teams:
+        subscribers = random.sample(participants, random.randint(1, 5))
+        for p in subscribers:
+            if p.username != team.owner: #eliminate self-subscription
+                subscriptions.append(fake_subscription(db, p, team))
 
     print("Making Elsewheres")
     for p in participants:
