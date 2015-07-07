@@ -98,8 +98,6 @@ def fake_team(db, teamowner):
                    , revenue_model=fake_sentence()
                    , owner=teamowner.username
                    , is_approved=random.sample(isapproved,1)[0]
-                   , receiving=0.1
-                   , nmembers=3
                    )
     except IntegrityError:
         return fake_team(db, teamowner)
