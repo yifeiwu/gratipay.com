@@ -77,9 +77,6 @@ def fake_participant(db, number="singular", is_admin=False):
 def fake_team(db, teamowner):
     """Create a fake team
     """
-    isapproved = [True, False]
-    productorservice = ['Product','Service']
-
     teamname = faker.first_name() + fake_text_id(3)
     teamslugname = faker.city()
 
@@ -97,7 +94,7 @@ def fake_team(db, teamowner):
                    , getting_paid=fake_sentence()
                    , revenue_model=fake_sentence()
                    , owner=teamowner.username
-                   , is_approved=random.sample(isapproved,1)[0]
+                   , is_approved=random.choice([True, False, None])
                    )
     except IntegrityError:
         return fake_team(db, teamowner)
