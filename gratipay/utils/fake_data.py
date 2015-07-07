@@ -1,3 +1,4 @@
+from collections import defaultdict
 import datetime
 from decimal import Decimal as D
 import random
@@ -347,9 +348,7 @@ def populate_db(db, num_participants=100, num_tips=200, num_teams=25, num_transf
     # Payments
     payments = []
     paymentcount = 0
-    teamamounts = {}
-    for team in teams:
-        teamamounts[team.slug] = 0
+    team_amounts = defaultdict(int)
     for subscription in subscriptions:
         participant = subscription['subscriber']
         team = Team.from_slug(subscription['team'])
@@ -359,12 +358,12 @@ def populate_db(db, num_participants=100, num_tips=200, num_teams=25, num_transf
         sys.stdout.write("\rMaking Payments (%i)" % (paymentcount))
         sys.stdout.flush()
         payments.append(fake_payment(db, participant, team.slug, amount, 'to-team'))
-        teamamounts[team.slug] = teamamounts[team.slug] + amount
+        team_amounts[team.slug] += amount
     for team in teams:
         paymentcount += 1
         sys.stdout.write("\rMaking Payments (%i)" % (paymentcount))
         sys.stdout.flush()
-        payments.append(fake_payment(db, team.owner, team.slug, teamamounts[team.slug], 'to-participant'))
+        payments.append(fake_payment(db, team.owner, team.slug, team_amounts[team.slug], 'to-participant'))
     print("")
 
     # Transfers
