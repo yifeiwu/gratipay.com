@@ -76,7 +76,7 @@ class Payday(object):
                 transfer_takes
                 process_draws
                 settle_card_holds
-                make_journal_entries
+                make_ledger_entries
                 take_over_balances
             update_stats
             update_cached_amounts
@@ -153,17 +153,17 @@ class Payday(object):
             self.transfer_takes(cursor, self.ts_start)
             self.process_draws(cursor)
             entries = cursor.all("""
-                SELECT * FROM journal WHERE "timestamp" > %s
+                SELECT * FROM ledger WHERE "timestamp" > %s
             """, (self.ts_start,))
             try:
                 self.settle_card_holds(cursor, holds)
-                self.make_journal_entries(cursor)
+                self.make_ledger_entries(cursor)
                 check_db(cursor)
             except:
                 # Dump payments for debugging
                 import csv
                 from time import time
-                with open('%s_journal.csv' % time(), 'wb') as f:
+                with open('%s_ledger.csv' % time(), 'wb') as f:
                     csv.writer(f).writerows(entries)
                 raise
         self.take_over_balances()
@@ -318,12 +318,12 @@ class Payday(object):
 
 
     @staticmethod
-    def make_journal_entries(cursor):
-        log("Making journal entries.")
+    def make_ledger_entries(cursor):
+        log("Making ledger entries.")
         nentries = len(cursor.all("""
-            INSERT INTO journal
+            INSERT INTO ledger
                         (ts, amount, debit, credit, payday)
-                        (SELECT * FROM payday_journal)
+                        (SELECT * FROM payday_ledger)
             RETURNING id;
         """))
         log("Journal entries recorded: %i." % nentries)
