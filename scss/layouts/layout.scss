@@ -8,8 +8,6 @@ body {
 }
 
 #header {
-    background: transparentize($white, 0.1);
-
     h1 {
         line-height: 100%;
         height: 64px;
@@ -49,22 +47,24 @@ body {
 }
 
 #banner {
-    border: 1px solid $brown;
-    border-style: solid none;
-    height: 194px;
-    background: $black url("banner.jpg") 50% 50% no-repeat;
-    background-size: cover;
+    height: 192px;
+    background: $white url("banner.jpg") 106px 0px no-repeat;
     position: relative;
     overflow: hidden;
 }
 
 #notice {
-    margin: 0 auto;
+    margin: 20px auto;
+    border: 1px solid $light-brown;
+    border-style: solid none;
     td {
         font: normal 12px/14px $Ideal;
         padding: 3px;
         vertical-align: middle;
         text-align: center;
+    }
+    .star {
+        color: $light-brown;
     }
 }
 
